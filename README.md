@@ -1,3 +1,3 @@
 ﻿# stocks-demo
 
-This demo implements classes for managing stock data.  Stock data, which is currently hard-coded, will be later replaced with an external dependency.  This dependency is satisfied by a Mockito implementation for the purpose of unit testing. 
+This demo implements classes for managing stock data.  Stock data is hard-coded in one implementation ('BasicStockService') and stored on a database in anothers ('DatabaseStockService' and 'DatabasePersonService').  Database is accessed via Hibernate database configuration relying on the existence of a database called 'stocks' granting all privileges to user 'monty' with password 'some_pass'. 
