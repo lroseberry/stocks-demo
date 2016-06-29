@@ -1,6 +1,6 @@
-package com.github.rjbx.demo.stocks;
+package com.github.rjbx.demo.stocks.services;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.apache.http.annotation.Immutable;
 
 /**
  * This interface requires that implementing classes define methods for getting the unit of time and amount of units for an {@code enum}.

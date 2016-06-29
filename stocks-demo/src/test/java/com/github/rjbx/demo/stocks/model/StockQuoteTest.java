@@ -1,10 +1,11 @@
-package com.github.rjbx.demo.stocks;
+package com.github.rjbx.demo.stocks.model;
 
+import com.github.rjbx.demo.stocks.model.StockQuote;
+import org.joda.time.DateTime;
+import org.apache.http.annotation.Immutable;
 import org.junit.Before;
 import org.junit.Test;
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -13,22 +14,23 @@ import static org.junit.Assert.assertTrue;
  * Unit tests for the StockQuote class.
  * @author Bob Basmaji
  */
+@Immutable
 public final class StockQuoteTest {
     // fields of this class
     private String stockSymbol;
     private BigDecimal stockPrice;
-    private Calendar dateRecorded;
+    private DateTime dateRecorded;
     private StockQuote stockQuote;
 
     /**
      * Sets up the logic common to each test
      */
     @Before
-    public final void setup() {
+    public final void setUp() {
         // initialize field variables
         stockSymbol = "APPL";
         stockPrice = new BigDecimal(100);
-        dateRecorded = Calendar.getInstance();
+        dateRecorded = DateTime.now();
         stockQuote = new StockQuote(dateRecorded, stockPrice, stockSymbol);
     }
 
@@ -38,7 +40,7 @@ public final class StockQuoteTest {
     @Test(expected = RuntimeException.class)
     public final void testStockQuoteConstructionDateRecorded() {
         // pass a null Date argument into StockQuote constructor
-        Calendar nullDate = null;
+        DateTime nullDate = null;
         new StockQuote(nullDate, stockPrice, stockSymbol);
     }
 
@@ -118,8 +120,7 @@ public final class StockQuoteTest {
     @Test
     public final void testGetDateRecordedNegative() {
         // compares method return value with unexpected result
-        Calendar dateNotRecorded = (Calendar) dateRecorded.clone();
-        dateNotRecorded.add(Calendar.DAY_OF_YEAR, 1);
+        DateTime dateNotRecorded = new DateTime(dateRecorded).plusDays(1);
         assertFalse("Value returned from getDateRecorded() equals day after parameter date",
                 stockQuote.getDateRecorded().equals(dateNotRecorded));
     }

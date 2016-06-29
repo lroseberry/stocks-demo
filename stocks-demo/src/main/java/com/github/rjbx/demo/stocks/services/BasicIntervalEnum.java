@@ -1,4 +1,4 @@
-package com.github.rjbx.demo.stocks;
+package com.github.rjbx.demo.stocks.services;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 

@@ -1,11 +1,12 @@
-package com.github.rjbx.demo.stocks;
+package com.github.rjbx.demo.stocks.model;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.apache.http.annotation.Immutable;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * This class stores information about a stock of a particular symbol, date and price.
@@ -14,10 +15,11 @@ import java.util.Calendar;
 @Immutable
 public final class StockQuote {
     // private fields of this class
+    public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    private static final DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(DATE_PATTERN);
     private final String stockSymbol;
     private final BigDecimal stockPrice;
-    private final Calendar dateRecorded;
-    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
+    private final DateTime dateRecorded;
 
     /**
      * Constructs a new {@code StockQuote} instance
@@ -25,12 +27,12 @@ public final class StockQuote {
      * @param stockPrice price of the stock on the provided date
      * @param stockSymbol symbol for the company issuing the stock
      */
-    public StockQuote(Calendar dateRecorded, BigDecimal stockPrice, String stockSymbol) {
+    public StockQuote(DateTime dateRecorded, BigDecimal stockPrice, String stockSymbol) {
         // if any parameter values are null, throw exception; otherwise, initialize fields
         if ((dateRecorded == null) || (stockPrice == null) || (stockSymbol == null)) {
             throw new RuntimeException();
         }
-        this.dateRecorded = dateRecorded;
+        this.dateRecorded = new DateTime(dateRecorded);
         this.stockPrice = stockPrice;
         this.stockSymbol = stockSymbol;
     }
@@ -52,20 +54,20 @@ public final class StockQuote {
     /**
      * @return the date that the info for this stock was recorded
      */
-    public final Calendar getDateRecorded() {
+    public final DateTime getDateRecorded() {
         return dateRecorded;
     }
 
     /**
      * @return an instance of an object for formatting all {@code StockQuote} dates according to the specified date pattern
      */
-    public static final SimpleDateFormat getDateFormatter() { return dateFormatter; }
+    public static final DateTimeFormatter getDateFormatter() { return dateFormatter; }
 
     /**
-     * @return a {@code String} containing the formatted values of the fields of this instance
+     * @return a String containing the formatted values of the fields of this instance
      */
     @Override
     public String toString() {
-        return " [ " + getStockSymbol() + " " + dateFormatter.format(getDateRecorded().getTime()) + " " + NumberFormat.getCurrencyInstance().format(getStockPrice()) + " ] ";
+        return " [ " + getStockSymbol() + " " + dateRecorded.toString(dateFormatter) + " " + NumberFormat.getCurrencyInstance().format(getStockPrice()) + " ] ";
     }
 }
