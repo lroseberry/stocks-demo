@@ -7,7 +7,4 @@ In progress
 Added XMLUtils class to unmarshal XML data into XML domain objects. Added DatabaseUtils method to convert XML domain objects to ORM database objects. Added new model classes (XML / ORM), updated DatabaseStockService with new method, enabling XML data to persist to database. Also updated/added new unit tests and converted time/date objects from Calendar to Joda DateTime class.
 
 7/13:
--ServiceFactory.createStockService() now accepts enum arguments only
--DatabaseStockQuote and DatabasePersonStock, which contain fields that reference mutable objects, now defensively copy these objects before returning via getter methods
--updated unit tests for said getter methods
--replaced costly looped immutable String concat with mutable StringBuilder in XMLUtils.unmarshal()
+ServiceFactory.createStockService() now accepts enum arguments only.  DatabaseStockQuote and DatabasePersonStock, which contain fields that reference mutable objects, now defensively copy these objects before returning via getter methods.  Updated unit tests for said getter methods. Replaced costly looped immutable String concat with mutable StringBuilder in XMLUtils.unmarshal()
