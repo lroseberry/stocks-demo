@@ -24,7 +24,8 @@ public class DatabasePersonService implements PersonService {
     }
 
     /**
-     * Gets a list of all persons stored in the "people" database
+     * Gets a list of all persons stored in the "people" database.
+     * Changes made by mutating objects in the returned list do not propagate to the database.
      * @return a list of Person instances
      * @throws PersonServiceException if a service can not perform the requested operation
      */
@@ -86,18 +87,19 @@ public class DatabasePersonService implements PersonService {
     public final List<DatabaseStockSymbol> getStockSymbols(DatabasePerson person) throws PersonServiceException {
         Session session =  DatabaseUtils.getSessionFactory().openSession();
         Transaction transaction = null;
-        List<DatabaseStockSymbol> stocks = new ArrayList<>();
+        List<DatabaseStockSymbol> stockSymbols = null;
         try {
             // assigns from the session to Criteria all instances of PersonStock containing the person parameter value
             // then converts Criteria to a list of the criteria type which is PersonStock.class
-            // and gets from each PersonStock instance the associated stock symbol
+            // and gets from each PersonStock instance the associated stock stockSymbol
             transaction = session.beginTransaction();
             Criteria criteria = session.createCriteria(DatabasePersonStock.class);
             criteria.add(Restrictions.eq("person", person));
 
             @SuppressWarnings("unchecked") List<DatabasePersonStock> list = criteria.list();
+            stockSymbols = new ArrayList<DatabaseStockSymbol>();
             for (DatabasePersonStock personStock : list) {
-                stocks.add(personStock.getStockSymbol());
+                stockSymbols.add(personStock.getStockSymbol());
             }
             transaction.commit();
         } catch (HibernateException e) {
@@ -109,27 +111,27 @@ public class DatabasePersonService implements PersonService {
                 transaction.commit();
             }
         }
-        return stocks;
+        return stockSymbols;
     }
 
     /**
      * Assigns a stock to a person
-     * @param symbol  The stockSymbol to assign
+     * @param stockSymbol  The stockSymbol to assign
      * @param person The person to whom the stockSymbol is assigned
      * @throws PersonServiceException if a service can not perform the requested operation
      */
-    public final void addStockToPerson(DatabaseStockSymbol symbol, DatabasePerson person) throws PersonServiceException {
+    public final void addStockToPerson(DatabaseStockSymbol stockSymbol, DatabasePerson person) throws PersonServiceException {
         Session session =  DatabaseUtils.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
             // updates instance of PersonStock if already exists within table
             // or adds as last row of personStock table
             transaction = session.beginTransaction();
-            session.saveOrUpdate(symbol);
+            session.saveOrUpdate(stockSymbol);
             DatabasePersonStock personStock = new DatabasePersonStock();
-            personStock.setStockSymbol(symbol);
+            personStock.setStockSymbol(stockSymbol);
             personStock.setPerson(person);
-            session.saveOrUpdate(symbol);
+            session.saveOrUpdate(stockSymbol);
             session.saveOrUpdate(personStock);
             transaction.commit();
         } catch (HibernateException e) {

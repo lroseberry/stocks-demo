@@ -4,6 +4,7 @@ import com.github.rjbx.demo.stocks.model.*;
 import com.github.rjbx.demo.stocks.services.DatabasePersonService;
 import com.github.rjbx.demo.stocks.services.DatabaseStockService;
 import com.github.rjbx.demo.stocks.services.ServiceFactory;
+import com.github.rjbx.demo.stocks.services.ServiceType;
 import com.ibatis.common.jdbc.ScriptRunner;
 import org.apache.http.annotation.Immutable;
 import org.hibernate.SessionFactory;
@@ -120,7 +121,7 @@ public final class  DatabaseUtils {
         XMLStockQuoteList quoteList = null;
         quoteList = XMLUtils.unmarshal(xmlData);
         List<XMLStockQuote> xmlQuotes = quoteList.getStock();
-        DatabaseStockService service = (DatabaseStockService) ServiceFactory.createStockService("database");
+        DatabaseStockService service = (DatabaseStockService) ServiceFactory.createStockService(ServiceType.DATABASE);
         for (XMLStockQuote quote : xmlQuotes) {
             service.addOrUpdateQuote(DateTime.parse(quote.getTime(), StockQuote.getDateFormatter()), new BigDecimal(quote.getPrice()), new DatabaseStockSymbol(quote.getSymbol()));
         }

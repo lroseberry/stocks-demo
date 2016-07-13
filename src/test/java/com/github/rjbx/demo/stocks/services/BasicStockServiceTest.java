@@ -1,6 +1,8 @@
 package com.github.rjbx.demo.stocks.services;
 
 import com.github.rjbx.demo.stocks.model.StockQuote;
+import com.github.rjbx.demo.stocks.utilities.HoursInterval;
+import com.github.rjbx.demo.stocks.utilities.StockServiceException;
 import org.joda.time.DateTime;
 import org.apache.http.annotation.Immutable;
 import org.junit.Before;
@@ -17,132 +19,133 @@ import static org.junit.Assert.assertTrue;
 public final class BasicStockServiceTest {
     // fields of this class
     private BasicStockService basicStockService;
-    private DateTime dateRecorded;
+    private DateTime time;
     private DateTime startRange;
     private DateTime endRange;
-    private String stockSymbol;
-    private BasicIntervalEnum intervalEnum;
+    private String symbol;
+    private HoursInterval interval;
     private static final int NUMBER_OF_DAYS = 15;
 
     /**
      * Sets up logic common to each test
+     * @throws StockServiceException
      */
     @Before
-    public final void setUp() {
-        basicStockService = (BasicStockService) ServiceFactory.createStockService("basic");
+    public final void setUp() throws StockServiceException{
+        basicStockService = (BasicStockService) ServiceFactory.createStockService(ServiceType.BASIC);
         startRange = DateTime.now().minusDays(NUMBER_OF_DAYS);
         endRange = DateTime.now();
-        dateRecorded = DateTime.now();
-        stockSymbol = "APPL";
-        intervalEnum = BasicIntervalEnum.DAY;
+        time = DateTime.now();
+        symbol = "APPL";
+        interval = HoursInterval.DAY;
     }
 
     /**
      * Verifies that the return value has the correct stock symbol
      */
     @Test
-    public final void testGetQuoteSingleArgStockSymbolPositive() {
+    public final void testGetQuoteSingleArgSymbolPositive() {
         assertTrue("Stock symbol returned from return value of getQuote does not equal parameter string",
-                basicStockService.getQuote(stockSymbol).getStockSymbol().equals(stockSymbol));
+                basicStockService.getQuote(symbol).getSymbol().equals(symbol));
     }
 
     /**
      * Verifies that the return value has an incorrect stock symbol
      */
     @Test
-    public final void testGetQuoteSingleArgStockSymbolNegative() {
+    public final void testGetQuoteSingleArgSymbolNegative() {
         assertFalse("Stock symbol returned from return value of getQuote equals lowercase-coverted parameter string",
-                basicStockService.getQuote(stockSymbol).getStockSymbol().equals(stockSymbol.toLowerCase()));
+                basicStockService.getQuote(symbol).getSymbol().equals(symbol.toLowerCase()));
     }
 
     /**
      * Verifies that the return value has the correct date recorded
      */
     @Test
-    public final void testGetQuoteSingleArgDateRecordedPositive() {
+    public final void testGetQuoteSingleArgTimePositive() {
         assertTrue("Date recorded returned from return value of getQuote does not equal today's date",
-                basicStockService.getQuote(stockSymbol).getDateRecorded().toString(StockQuote.DATE_PATTERN).equals(dateRecorded.toString(StockQuote.DATE_PATTERN)));
+                basicStockService.getQuote(symbol).getTime().toString(StockQuote.DATE_PATTERN).equals(time.toString(StockQuote.DATE_PATTERN)));
     }
 
     /**
      * Verifies that the return value has an incorrect date recorded
      */
     @Test
-    public final void testGetQuoteSingleArgDateRecordedNegative() {
-        dateRecorded = dateRecorded.plusDays(1);
+    public final void testGetQuoteSingleArgTimeNegative() {
+        time = time.plusDays(1);
         assertFalse("Date recorded returned from return value of getQuote equals tomorrow's date",
-                basicStockService.getQuote(stockSymbol).getDateRecorded().toString(StockQuote.DATE_PATTERN).equals(dateRecorded.toString(StockQuote.DATE_PATTERN)));
+                basicStockService.getQuote(symbol).getTime().toString(StockQuote.DATE_PATTERN).equals(time.toString(StockQuote.DATE_PATTERN)));
     }
 
     /**
      * Verifies that the return value has a correct stock symbol
      */
     @Test
-    public final void testGetQuoteTripleArgStockSymbolPositive() {
+    public final void testGetQuoteTripleArgSymbolPositive() {
         assertTrue("Stock symbol returned from return value of getQuote does not equal parameter string",
-                basicStockService.getQuote(stockSymbol, startRange, endRange).get(0).getStockSymbol().equals(stockSymbol));
+                basicStockService.getQuote(symbol, startRange, endRange).get(0).getSymbol().equals(symbol));
     }
 
     /**
      * Verifies that the return value has an incorrect stock symbol
      */
     @Test
-    public final void testGetQuoteTripleArgStockSymbolNegative() {
+    public final void testGetQuoteTripleArgSymbolNegative() {
         assertFalse("Stock symbol returned from return value of getQuote equals lowercase-coverted parameter string",
-                basicStockService.getQuote(stockSymbol, startRange, endRange).get(0).getStockSymbol().equals(stockSymbol.toLowerCase()));
+                basicStockService.getQuote(symbol, startRange, endRange).get(0).getSymbol().equals(symbol.toLowerCase()));
     }
 
     /**
      * Verifies that the return value has the correct date recorded
      */
     @Test
-    public final void testGetQuoteTripleArgDateRecordedPositive() {
+    public final void testGetQuoteTripleArgTimePositive() {
         assertTrue("Date recorded returned from first element of list returned by getQuote does not equal the parameter date",
-                basicStockService.getQuote(stockSymbol, startRange, endRange).get(0).getDateRecorded().toString(StockQuote.DATE_PATTERN).equals(startRange.toString(StockQuote.DATE_PATTERN)));
+                basicStockService.getQuote(symbol, startRange, endRange).get(0).getTime().toString(StockQuote.DATE_PATTERN).equals(startRange.toString(StockQuote.DATE_PATTERN)));
     }
 
     /**
      * Verifies that the return value has an incorrect date recorded
      */
     @Test
-    public final void testGetQuoteTripleArgDateRecordedNegative() {
+    public final void testGetQuoteTripleArgTimeNegative() {
         assertFalse("Date recorded returned from first element of list returned by getQuote equals the date of the parameter value of the end date",
-                basicStockService.getQuote(stockSymbol, startRange, endRange).get(0).getDateRecorded().toString(StockQuote.DATE_PATTERN).equals(endRange.toString(StockQuote.DATE_PATTERN)));
+                basicStockService.getQuote(symbol, startRange, endRange).get(0).getTime().toString(StockQuote.DATE_PATTERN).equals(endRange.toString(StockQuote.DATE_PATTERN)));
     }
 
     /**
      * Verifies that the return value has the correct stock symbol
      */
     @Test
-    public final void testGetQuoteQuadArgStockSymbolPositive() {
+    public final void testGetQuoteQuadArgSymbolPositive() {
         assertTrue("Stock symbol returned from return value of getQuote does not equal parameter string",
-                basicStockService.getQuote(stockSymbol, startRange, endRange, intervalEnum).get(0).getStockSymbol().equals(stockSymbol));
+                basicStockService.getQuote(symbol, startRange, endRange, interval).get(0).getSymbol().equals(symbol));
     }
 
     /**
      * Verifies that the return value has an incorrect stock symbol
      */
     @Test
-    public final void testGetQuoteQuadArgStockSymbolNegative() {
+    public final void testGetQuoteQuadArgSymbolNegative() {
         assertFalse("Stock symbol returned from return value of getQuote equals lowercase-coverted parameter string",
-                basicStockService.getQuote(stockSymbol, startRange, endRange, intervalEnum).get(0).getStockSymbol().equals(stockSymbol.toLowerCase()));
+                basicStockService.getQuote(symbol, startRange, endRange, interval).get(0).getSymbol().equals(symbol.toLowerCase()));
     }
 
     /**
      * Verifies that the return value has the correct date recorded
      */
     @Test
-    public final void testGetQuoteQuadArgDateRecordedPositive() {
+    public final void testGetQuoteQuadArgTimePositive() {
         assertTrue("Date recorded returned from first element of list returned by getQuote does not equal the parameter date",
-                basicStockService.getQuote(stockSymbol, startRange, endRange, intervalEnum).get(0).getDateRecorded().toString(StockQuote.DATE_PATTERN).equals(startRange.toString(StockQuote.DATE_PATTERN)));
+                basicStockService.getQuote(symbol, startRange, endRange, interval).get(0).getTime().toString(StockQuote.DATE_PATTERN).equals(startRange.toString(StockQuote.DATE_PATTERN)));
     }
 
     /**
      * Verifies that the return value has an incorrect date recorded
      */
     @Test
-    public final void testGetQuoteQuadArgDateRecordedNegative() {
+    public final void testGetQuoteQuadArgTimeNegative() {
         assertFalse("Date recorded returned from first element of list returned by getQuote equals the date of the parameter value of the end date",
-                basicStockService.getQuote(stockSymbol, startRange, endRange, intervalEnum).get(0).getDateRecorded().toString(StockQuote.DATE_PATTERN).equals(endRange.toString(StockQuote.DATE_PATTERN)));
+                basicStockService.getQuote(symbol, startRange, endRange, interval).get(0).getTime().toString(StockQuote.DATE_PATTERN).equals(endRange.toString(StockQuote.DATE_PATTERN)));
     }
 }

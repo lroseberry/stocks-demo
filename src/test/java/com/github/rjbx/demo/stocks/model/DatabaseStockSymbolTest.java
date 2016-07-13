@@ -85,7 +85,7 @@ public final class DatabaseStockSymbolTest {
      */
     @Test
     public final void testGetSymbolNegative() {
-        assertFalse("getStockSymbol retrieves a value other than the one passed to the set method of the same object",
+        assertFalse("getSymbol retrieves a value other than the one passed to the set method of the same object",
                 stockSymbol.getSymbol().equals("CHEE"));
     }
 

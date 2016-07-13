@@ -1,14 +1,13 @@
 package com.github.rjbx.demo.stocks.utilities;
 
-import com.github.rjbx.demo.stocks.model.DatabaseStockQuote;
 import com.github.rjbx.demo.stocks.model.StockQuote;
 import com.github.rjbx.demo.stocks.services.ServiceFactory;
+import com.github.rjbx.demo.stocks.services.ServiceType;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException;
 import org.apache.http.annotation.Immutable;
 import org.hibernate.Session;
 import org.junit.Before;
 import org.junit.Test;
-import org.xml.sax.SAXParseException;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -107,8 +106,8 @@ public final class DatabaseUtilsTest {
     @Test
     public final void testPersistXMLDataPositive() throws StockServiceException, XMLUnmarshalException {
         DatabaseUtils.persistXMLData(XMLUtils.xmlFilePath);
-        StockQuote quote = ServiceFactory.createStockService("database").getQuote("WIFI");
-        assertTrue("persistXMLData() does not store data from the referenced XML file", quote.getStockPrice() instanceof BigDecimal);
+        StockQuote quote = ServiceFactory.createStockService(ServiceType.DATABASE).getQuote("WIFI");
+        assertTrue("persistXMLData() does not store data from the referenced XML file", quote.getPrice() instanceof BigDecimal);
     }
 
     /**

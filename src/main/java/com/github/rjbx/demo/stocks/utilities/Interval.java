@@ -1,4 +1,4 @@
-package com.github.rjbx.demo.stocks.services;
+package com.github.rjbx.demo.stocks.utilities;
 
 import org.apache.http.annotation.Immutable;
 
@@ -6,11 +6,11 @@ import org.apache.http.annotation.Immutable;
  * This interface requires that implementing classes define methods for getting the unit of time and amount of units for an {@code enum}.
  * Enumerations for intervals of time may implement this interface.
  * Implementing classes may extend the basic implementation.
- * @see BasicIntervalEnum
+ * @see HoursInterval
  * @author Bob Basmaji
  */
 @Immutable
-public interface IntervalEnum {
+public interface Interval {
 
     /**
      * @return the amount of the unit desired

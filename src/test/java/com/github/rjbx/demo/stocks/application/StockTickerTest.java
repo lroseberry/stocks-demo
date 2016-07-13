@@ -2,9 +2,9 @@ package com.github.rjbx.demo.stocks.application;
 
 import com.github.rjbx.demo.stocks.model.StockQuote;
 import com.github.rjbx.demo.stocks.services.*;
-import com.github.rjbx.demo.stocks.utilities.DatabaseConnectionException;
 import com.github.rjbx.demo.stocks.utilities.DatabaseInitializationException;
 import com.github.rjbx.demo.stocks.utilities.DatabaseUtils;
+import com.github.rjbx.demo.stocks.utilities.HoursInterval;
 import com.github.rjbx.demo.stocks.utilities.StockServiceException;
 import org.apache.http.annotation.Immutable;
 import org.joda.time.DateTime;
@@ -13,7 +13,6 @@ import org.mockito.Mockito;
 
 import javax.xml.bind.JAXBException;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.Assert.assertFalse;
@@ -31,13 +30,13 @@ import static org.mockito.Mockito.when;
 @Immutable
 public final class StockTickerTest {
     // fields of this class
-    private StockService stockServiceMock;
+    private StockService stockService;
     private DateTime startRange;
     private DateTime endRange;
-    private String stockSymbol;
-    private BigDecimal expectedPrice;
+    private String symbol;
+    private BigDecimal price;
     private StockTicker stockTicker;
-    private BasicIntervalEnum intervalEnum;
+    private HoursInterval interval;
     private static final int NUMBER_OF_DAYS = 100;
 
     /**
@@ -50,21 +49,21 @@ public final class StockTickerTest {
         DatabaseUtils.initializeDatabase(DatabaseUtils.initializationFile);
 
         // mock the external dependency
-        stockServiceMock = Mockito.mock(StockService.class);
+        stockService = Mockito.mock(StockService.class);
 
         // create the data we expect the service to return
-        stockSymbol = "AAPL";
+        symbol = "AAPL";
         startRange = DateTime.now().minusDays(NUMBER_OF_DAYS);
         endRange = DateTime.now();
-        expectedPrice = new BigDecimal(100);
-        intervalEnum = BasicIntervalEnum.WEEK;
+        price = new BigDecimal(100);
+        interval = HoursInterval.WEEK;
 
         // tell the mock service to return a StockQuote with a specific price and symbol when getQuote() is called
-        when(stockServiceMock.getQuote(any(String.class)))
-                .thenReturn(new StockQuote(DateTime.now(), expectedPrice, stockSymbol));
+        when(stockService.getQuote(any(String.class)))
+                .thenReturn(new StockQuote(DateTime.now(), price, symbol));
 
         // create the StickTicker instance to test
-        stockTicker = new StockTicker(stockServiceMock);
+        stockTicker = new StockTicker(stockService);
     }
 
     /**
@@ -74,12 +73,12 @@ public final class StockTickerTest {
     @Test
     public final void testGetStockHistoryDayRecordedPositive() throws StockServiceException {
         // compares method return values with expected results
-        List<StockQuote> stockHistory = stockTicker.getStockHistory(stockSymbol, startRange, endRange, intervalEnum);
-        DateTime dateRecorded = new DateTime(startRange);
+        List<StockQuote> stockHistory = stockTicker.getStockHistory(symbol, startRange, endRange, interval);
+        DateTime time = new DateTime(startRange);
         for (StockQuote quote : stockHistory) {
             assertTrue("Date recorded returned from return value of getStockHistory() does not equal the parameter string",
-                    quote.getDateRecorded().equals(dateRecorded));
-            dateRecorded.plusDays(intervalEnum.amount());
+                    quote.getTime().equals(time));
+            time.plusDays(interval.amount());
         }
     }
 
@@ -90,12 +89,12 @@ public final class StockTickerTest {
     @Test
     public final void testGetStockHistoryDayRecordedNegative() throws StockServiceException {
         // compares method return values with unexpected results
-        List<StockQuote> stockHistory = stockTicker.getStockHistory(stockSymbol, endRange, startRange, intervalEnum);
-        DateTime dateRecorded = new DateTime(startRange);
+        List<StockQuote> stockHistory = stockTicker.getStockHistory(symbol, endRange, startRange, interval);
+        DateTime time = new DateTime(startRange);
         for (StockQuote quote : stockHistory) {
             assertFalse("Date recorded returned from return value of getStockHistory() does not equal the parameter string",
-                    quote.getDateRecorded().equals(dateRecorded));
-            dateRecorded.plusDays(intervalEnum.amount());
+                    quote.getTime().equals(time));
+            time.plusDays(interval.amount());
         }
     }
 
@@ -104,12 +103,12 @@ public final class StockTickerTest {
      * @throws StockServiceException
      */
     @Test
-    public final void testGetStockHistoryStockSymbolPositive() throws StockServiceException {
+    public final void testGetStockHistorySymbolPositive() throws StockServiceException {
         // compares method return values with expected results
-        List<StockQuote> stockHistory = stockTicker.getStockHistory(stockSymbol, startRange, endRange, intervalEnum);
+        List<StockQuote> stockHistory = stockTicker.getStockHistory(symbol, startRange, endRange, interval);
         for (StockQuote quote : stockHistory) {
-            assertTrue("Stock symbol returned from return value of getStockHistory() does not equal the parameter string",
-                    quote.getStockSymbol().equals(stockSymbol));
+            assertTrue("Symbol returned from return value of getStockHistory() does not equal the parameter string",
+                    quote.getSymbol().equals(symbol));
         }
     }
 
@@ -118,12 +117,12 @@ public final class StockTickerTest {
      * @throws StockServiceException
      */
     @Test
-    public final void testGetStockHistoryStockSymbolNegative() throws StockServiceException {
+    public final void testGetStockHistorySymbolNegative() throws StockServiceException {
         // compares method return values with unexpected results
-        List<StockQuote> stockHistory = stockTicker.getStockHistory(stockSymbol, startRange, endRange, intervalEnum);
+        List<StockQuote> stockHistory = stockTicker.getStockHistory(symbol, startRange, endRange, interval);
         for (StockQuote quote : stockHistory) {
-            assertFalse("Stock symbol returned from return value of getStockHistory() equals lowercase-converted parameter string",
-                    quote.getStockSymbol().equals(stockSymbol.toLowerCase()));
+            assertFalse("Symbol returned from return value of getStockHistory() equals lowercase-converted parameter string",
+                    quote.getSymbol().equals(symbol.toLowerCase()));
         }
     }
 
@@ -135,8 +134,8 @@ public final class StockTickerTest {
     public void testMainPositive() throws StockServiceException, JAXBException {
         String start = startRange.toString(StockQuote.DATE_PATTERN);
         String end = endRange.toString(StockQuote.DATE_PATTERN);
-        String interval = intervalEnum.toString();
-        String[] args = { stockSymbol, start, end, interval };
+        String interval = this.interval.toString();
+        String[] args = {symbol, start, end, interval };
         try {
             StockTicker.main(args);
         } catch (NullPointerException e) {

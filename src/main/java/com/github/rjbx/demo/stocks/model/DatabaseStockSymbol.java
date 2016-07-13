@@ -3,7 +3,9 @@ package com.github.rjbx.demo.stocks.model;
 import javax.persistence.*;
 
 /**
- *
+ * This class models a database table containing stock symbol information
+ * as specified by the "name" property of the {@code @Table} annotation.
+ * @author Bob Basmaji
  */
 @Entity
 @Table(name="stock_symbols", catalog="stocks")

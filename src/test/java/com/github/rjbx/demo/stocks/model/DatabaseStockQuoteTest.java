@@ -19,8 +19,8 @@ public final class DatabaseStockQuoteTest {
     // private fields of this class
     private static final DateTime time = new DateTime(2015, 12, 25, 18, 0, 0);
     private static final BigDecimal price = new BigDecimal(35.64);
-    private static final String symbolStr = "HAMM";
-    private static DatabaseStockSymbol symbol;
+    private static final String symbol = "HAMM";
+    private static DatabaseStockSymbol stockSymbol;
     private static DatabaseStockQuote quote;
     private static final int id = 55;
 
@@ -29,8 +29,8 @@ public final class DatabaseStockQuoteTest {
      */
     @Before
     public final void setUp() {
-        symbol = new DatabaseStockSymbol(symbolStr);
-        quote = new DatabaseStockQuote(time, price, symbol);
+        stockSymbol = new DatabaseStockSymbol(symbol);
+        quote = new DatabaseStockQuote(time, price, stockSymbol);
         quote.setId(id);
     }
 
@@ -57,7 +57,7 @@ public final class DatabaseStockQuoteTest {
      */
     @Test
     public final void setIdPositive() {
-        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, symbol);
+        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, stockSymbol);
         quote2.setId(quote.getId());
         boolean idMatches = false;
         if (quote.getId() == quote2.getId()) idMatches = true;
@@ -70,7 +70,7 @@ public final class DatabaseStockQuoteTest {
      */
     @Test
     public final void testSetIdNegative() {
-        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, symbol);
+        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, stockSymbol);
         quote2.setId(34);
         assertFalse("setId does not change the Id", (quote.getId() == quote2.getId()));
     }
@@ -98,7 +98,7 @@ public final class DatabaseStockQuoteTest {
      */
     @Test
     public final void setTimePositive() {
-        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, symbol);
+        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, stockSymbol);
         boolean timeMatches = false;
         if (quote.getTime().equals(quote2.getTime())) timeMatches = true;
         quote2.setTime(DateTime.now());
@@ -110,7 +110,7 @@ public final class DatabaseStockQuoteTest {
      */
     @Test
     public final void testSetTimeNegative() {
-        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, symbol);
+        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, stockSymbol);
         quote2.setTime(time.minusDays(4));
         assertFalse("setTime does not change the time", (quote.getTime().equals(quote2.getTime())));
     }
@@ -138,7 +138,7 @@ public final class DatabaseStockQuoteTest {
      */
     @Test
     public final void testSetPricePositive() {
-        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, symbol);
+        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, stockSymbol);
         boolean priceMatches = false;
         if (quote.getPrice().equals(quote2.getPrice())) priceMatches = true;
         quote2.setPrice(new BigDecimal(23.45));
@@ -150,27 +150,30 @@ public final class DatabaseStockQuoteTest {
      */
     @Test
     public final void testSetPriceNegative() {
-        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, symbol);
+        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, stockSymbol);
         quote2.setPrice(new BigDecimal(23.45));
         assertFalse("setPrice does not change the Id", (quote.getPrice().equals(quote2.getPrice())));
     }
 
     /**
-     * Verifies that getStockSymbol retrieves the value passed to the corresponding setter method of the same object
+     * Verifies that getSymbol retrieves the value passed to the corresponding setter method of the same object
      */
     @Test
     public final void testGetStockSymbolPositive() {
-        assertTrue("getStockSymbol retrieves a value other than the one passed to the set method of the same object",
-                quote.getStockSymbol().equals(symbol));
+        assertTrue("getSymbol retrieves a value other than the one passed to the set method of the same object",
+                quote.getStockSymbol().equals(stockSymbol));
     }
 
     /**
-     * Verifies that getStockSymbol retrieves the value passed to the corresponding setter method of the same object
+     * Verifies that getSymbol return value does not match a value other than that which was passed into setter method
      */
     @Test
-    public final void testGetStockSymbolNegative() {
-        assertFalse("getStockSymbol retrieves a value other than the one passed to the set method of the same object",
-                quote.getStockSymbol().equals(new DatabaseStockSymbol("CHEE")));
+    public final void testGetSetStockSymbolNegative() {
+        DatabaseStockSymbol stockSymbol2 = new DatabaseStockSymbol("CHEE");
+        quote.getStockSymbol().setSymbol(stockSymbol2.getSymbol());
+        quote.getStockSymbol().setId(stockSymbol2.getId());
+        assertFalse("getSymbol return value matches a value other than that which was passed into setter method",
+                stockSymbol2.equals(quote.getStockSymbol()));
     }
 
     /**
@@ -178,7 +181,7 @@ public final class DatabaseStockQuoteTest {
      */
     @Test
     public final void testSetStockSymbolPositive() {
-        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, symbol);
+        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, stockSymbol);
         boolean stockSymbolMatches = false;
         if (quote.getStockSymbol().equals(quote2.getStockSymbol())) stockSymbolMatches = true;
         quote2.setStockSymbol(new DatabaseStockSymbol("CHEE"));
@@ -191,7 +194,7 @@ public final class DatabaseStockQuoteTest {
      */
     @Test
     public final void testSetStockSymbolNegative() {
-        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, symbol);
+        DatabaseStockQuote quote2 = new DatabaseStockQuote(time, price, stockSymbol);
         quote2.setStockSymbol(new DatabaseStockSymbol("CHEE"));
         assertFalse("setStockSymbol does not change the stockSymbol",
                 (quote.getStockSymbol().equals(quote2.getStockSymbol())));

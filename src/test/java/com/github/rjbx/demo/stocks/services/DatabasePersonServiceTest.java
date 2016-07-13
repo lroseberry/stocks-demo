@@ -58,6 +58,7 @@ public final class DatabasePersonServiceTest {
     @Test
     public void testGetPersonsPositive() throws PersonServiceException {
         List<DatabasePerson> personList = personService.getPersons();
+        personList = personService.getPersons();
         assertTrue("Value returned from getPersons contains objects other than persons",
                 personList.get(0) instanceof DatabasePerson);
     }
@@ -115,9 +116,9 @@ public final class DatabasePersonServiceTest {
         personService.addOrUpdatePerson(person);
         personService.addStockToPerson(stockSymbol, person);
         boolean foundSymbol = false;
-        List<DatabaseStockSymbol> symbolList = personService.getStockSymbols(person);
-        for (DatabaseStockSymbol symbol : symbolList) {
-            if (symbol.equals(stockSymbol)) {
+        List<DatabaseStockSymbol> stockSymbols = personService.getStockSymbols(person);
+        for (DatabaseStockSymbol stockSymbol : stockSymbols) {
+            if (stockSymbol.equals(this.stockSymbol)) {
                 foundSymbol = true;
                 break;
             }
@@ -132,16 +133,16 @@ public final class DatabasePersonServiceTest {
     @Test
     public void testAddStockToPersonNegative() throws PersonServiceException {
         personService.addOrUpdatePerson(person);
-        List<DatabaseStockSymbol> symbolList = personService.getStockSymbols(person);
-        int listSize1 = symbolList.size();
+        List<DatabaseStockSymbol> stockSymbols = personService.getStockSymbols(person);
+        int listSize1 = stockSymbols.size();
         personService.addStockToPerson(stockSymbol, person);
-        symbolList = personService.getStockSymbols(person);
-        int listSize2 = symbolList.size();
+        stockSymbols = personService.getStockSymbols(person);
+        int listSize2 = stockSymbols.size();
         assertFalse("Person's stock list was not smaller before addStockUpdatePerson was called", listSize1 >= listSize2);
     }
 
     /**
-     * Verifies that multiple calls to getStockSymbol returns the same values
+     * Verifies that multiple calls to getSymbol returns the same values
      * @throws PersonServiceException
      */
     @Test
@@ -152,13 +153,13 @@ public final class DatabasePersonServiceTest {
         List<DatabaseStockSymbol> stockSymbols2 = personService.getStockSymbols(person);
         for (DatabaseStockSymbol stockSymbol : stockSymbols) {
             boolean removed = stockSymbols2.remove(stockSymbol);
-            assertTrue("getStockSymbol does not return the same values", removed);
+            assertTrue("getSymbol does not return the same values", removed);
         }
-        assertTrue("getStockSymbol does not return the same values", stockSymbols2.isEmpty());
+        assertTrue("getSymbol does not return the same values", stockSymbols2.isEmpty());
     }
 
     /**
-     * Verifies that multiple calls to getStockSymbol do not return different values
+     * Verifies that multiple calls to getSymbol do not return different values
      * @throws PersonServiceException
      */
     @Test
@@ -166,16 +167,16 @@ public final class DatabasePersonServiceTest {
         personService.addOrUpdatePerson(person);
         personService.addStockToPerson(stockSymbol, person);
         List<DatabaseStockSymbol> stockSymbols = personService.getStockSymbols(person);
-        DatabaseStockSymbol symbol2 = new DatabaseStockSymbol("BEEF PALLELLA");
+        DatabaseStockSymbol stockSymbol2 = new DatabaseStockSymbol("BEEF PALLELLA");
         for (DatabaseStockSymbol stockSymbol : stockSymbols) {
-            boolean removed = stockSymbols.remove(symbol2);
-            assertFalse("getStockSymbol returns different values", removed);
+            boolean removed = stockSymbols.remove(stockSymbol2);
+            assertFalse("getSymbol returns different values", removed);
         }
-        assertFalse("getStockSymbol returns different values", stockSymbols.isEmpty());
+        assertFalse("getSymbol returns different values", stockSymbols.isEmpty());
     }
 
     /**
-     * Verifies that getStockSymbol returns the correct values
+     * Verifies that getSymbol returns the correct values
      * @throws PersonServiceException
      */
     @Test
@@ -183,11 +184,11 @@ public final class DatabasePersonServiceTest {
         personService.addOrUpdatePerson(person);
         personService.addStockToPerson(stockSymbol, person);
         List<DatabaseStockSymbol> stockSymbols = personService.getStockSymbols(person);
-        assertTrue("getStockSymbol does not return the correct value", stockSymbols.get(0).equals(stockSymbol));
+        assertTrue("getSymbol does not return the correct value", stockSymbols.get(0).equals(stockSymbol));
     }
 
     /**
-     * Verifies that getStockSymbol does not return invalid values
+     * Verifies that getSymbol does not return invalid values
      * @throws PersonServiceException
      */
     @Test
@@ -195,7 +196,7 @@ public final class DatabasePersonServiceTest {
         personService.addOrUpdatePerson(person);
         personService.addStockToPerson(stockSymbol, person);
         List<DatabaseStockSymbol> stockSymbols = personService.getStockSymbols(person);
-        DatabaseStockSymbol symbol = stockSymbols.get(0);
-        assertFalse("getStockSymbol returns an invalid value", symbol.getSymbol().equals("sauerkraut^_^"));
+        DatabaseStockSymbol stockSymbol = stockSymbols.get(0);
+        assertFalse("getSymbol returns an invalid value", stockSymbol.getSymbol().equals("sauerkraut^_^"));
     }
 }

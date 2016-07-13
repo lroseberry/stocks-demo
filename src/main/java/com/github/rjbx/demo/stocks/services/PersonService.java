@@ -39,5 +39,5 @@ public interface PersonService {
      * @param person The person to whom the stockSymbol is assigned
      * @throws PersonServiceException if a service cannot perform the requested operation
      */
-    public void addStockToPerson(DatabaseStockSymbol symbol, DatabasePerson person) throws PersonServiceException;
+    public void addStockToPerson(DatabaseStockSymbol stockSymbol, DatabasePerson person) throws PersonServiceException;
 }

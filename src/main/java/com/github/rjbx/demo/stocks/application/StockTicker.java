@@ -3,6 +3,8 @@ package com.github.rjbx.demo.stocks.application;
 import com.github.rjbx.demo.stocks.model.StockQuote;
 import com.github.rjbx.demo.stocks.model.XMLStockQuoteList;
 import com.github.rjbx.demo.stocks.services.*;
+import com.github.rjbx.demo.stocks.utilities.HoursInterval;
+import com.github.rjbx.demo.stocks.utilities.Interval;
 import com.github.rjbx.demo.stocks.utilities.StockServiceException;
 import org.apache.http.annotation.Immutable;
 import org.joda.time.DateTime;
@@ -13,7 +15,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
-import java.text.ParseException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -40,17 +41,17 @@ public final class StockTicker {
 
     /**
      * Gets a {@code List} of {@code StockQuote} instances for the specified date range
-     * @param stockSymbol  symbol for the company issuing the stock
+     * @param symbol  symbol for the company issuing the stock
      * @param startRange beginning of the date range
      * @param endRange   end of the date range
      * @param interval time elapsed between stockQuote instances
      * @return a {@code List} containing one {@code StockQuote} instance per interval in the specified date range
      * @throws StockServiceException
      */
-    public List<StockQuote> getStockHistory(String stockSymbol, DateTime startRange, DateTime endRange, IntervalEnum interval) throws StockServiceException {
+    public List<StockQuote> getStockHistory(String symbol, DateTime startRange, DateTime endRange, Interval interval) throws StockServiceException {
         // set up variables for getting and storing {@code StockQuotes}
         List<StockQuote> returnValue = new ArrayList();
-        returnValue.addAll(stockService.getQuote(stockSymbol, startRange, endRange, interval));
+        returnValue.addAll(stockService.getQuote(symbol, startRange, endRange, interval));
         return returnValue;
     }
 
@@ -62,8 +63,8 @@ public final class StockTicker {
      * @throws JAXBException
      */
     public static void main(String[] args) throws StockServiceException, JAXBException {
-        StockService basicService = ServiceFactory.createStockService("basic");
-        StockService databaseService = ServiceFactory.createStockService("database");
+        StockService basicService = ServiceFactory.createStockService(ServiceType.BASIC);
+        StockService databaseService = ServiceFactory.createStockService(ServiceType.DATABASE);
         System.out.println(basicService.getQuote(args[0]));
         System.out.println(databaseService.getQuote(args[0]));
 
@@ -74,7 +75,7 @@ public final class StockTicker {
         System.out.println(basicService.getQuote(args[0], startRange, endRange));
         System.out.println(databaseService.getQuote(args[0], startRange, endRange));
 
-        IntervalEnum interval = BasicIntervalEnum.valueOf(args[3]);
+        Interval interval = HoursInterval.valueOf(args[3]);
         System.out.println(basicService.getQuote(args[0], startRange, endRange, interval));
         System.out.println(databaseService.getQuote(args[0], startRange, endRange, interval));
 

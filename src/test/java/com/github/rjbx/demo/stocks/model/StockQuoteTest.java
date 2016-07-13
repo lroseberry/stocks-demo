@@ -1,6 +1,5 @@
 package com.github.rjbx.demo.stocks.model;
 
-import com.github.rjbx.demo.stocks.model.StockQuote;
 import org.joda.time.DateTime;
 import org.apache.http.annotation.Immutable;
 import org.junit.Before;
@@ -17,9 +16,9 @@ import static org.junit.Assert.assertTrue;
 @Immutable
 public final class StockQuoteTest {
     // fields of this class
-    private String stockSymbol;
-    private BigDecimal stockPrice;
-    private DateTime dateRecorded;
+    private String symbol;
+    private BigDecimal price;
+    private DateTime time;
     private StockQuote stockQuote;
 
     /**
@@ -28,100 +27,100 @@ public final class StockQuoteTest {
     @Before
     public final void setUp() {
         // initialize field variables
-        stockSymbol = "APPL";
-        stockPrice = new BigDecimal(100);
-        dateRecorded = DateTime.now();
-        stockQuote = new StockQuote(dateRecorded, stockPrice, stockSymbol);
+        symbol = "APPL";
+        price = new BigDecimal(100);
+        time = DateTime.now();
+        stockQuote = new StockQuote(time, price, symbol);
     }
 
     /**
      * Verifies that a RuntimeException is thrown when a StockQuote object is improperly constructed
      */
     @Test(expected = RuntimeException.class)
-    public final void testStockQuoteConstructionDateRecorded() {
+    public final void testStockQuoteConstructionTime() {
         // pass a null Date argument into StockQuote constructor
         DateTime nullDate = null;
-        new StockQuote(nullDate, stockPrice, stockSymbol);
+        new StockQuote(nullDate, price, symbol);
     }
 
     /**
      * Verifies that a RuntimeException is thrown when a StockQuote object is improperly constructed
      */
     @Test(expected = RuntimeException.class)
-    public final void testStockQuoteConstructionStockPrice() {
+    public final void testStockQuoteConstructionPrice() {
         // pass a null BigDecimal argument into StockQuote constructor
         BigDecimal nullNumber = null;
-        new StockQuote(dateRecorded, nullNumber, stockSymbol);
+        new StockQuote(time, nullNumber, symbol);
     }
 
     /**
      * Verifies that a RuntimeException is thrown when a StockQuote object is improperly constructed
      */
     @Test(expected = RuntimeException.class)
-    public final void testStockQuoteConstructionStockSymbol() {
+    public final void testStockQuoteConstructionSymbol() {
         // pass a null BigDecimal argument into StockQuote constructor
         String nullString = null;
-        new StockQuote(dateRecorded, stockPrice, nullString);
+        new StockQuote(time, price, nullString);
     }
 
     /**
      * Verifies that the correct stock symbol is returned
      */
     @Test
-    public final void testGetStockSymbolPositive() {
+    public final void testGetSymbolPositive() {
         // compares method return value with expected result
-        assertTrue("Value returned from getStockSymbol() equals parameter string",
-                stockQuote.getStockSymbol().equals(stockSymbol));
+        assertTrue("Value returned from getSymbol() equals parameter string",
+                stockQuote.getSymbol().equals(symbol));
     }
 
     /**
      * Verifies that an incorrect stock symbol is returned
      */
     @Test
-    public final void testGetStockSymbolNegative() {
+    public final void testGetSymbolNegative() {
         // compares method return value with unexpected result
-        assertFalse("Value returned from getStockSymbol() equals lowercase-converted parameter string",
-                stockQuote.getStockSymbol().equals(stockSymbol.toLowerCase()));
+        assertFalse("Value returned from getSymbol() equals lowercase-converted parameter string",
+                stockQuote.getSymbol().equals(symbol.toLowerCase()));
     }
 
     /**
      * Verifies that the correct stock price is returned
      */
     @Test
-    public final void testGetStockPricePositive() {
+    public final void testGetPricePositive() {
         // compares method return value with expected result
-        assertTrue("Value returned from getStockPrice() equals the parameter value",
-                stockQuote.getStockPrice() == stockPrice);
+        assertTrue("Value returned from getPrice() equals the parameter value",
+                stockQuote.getPrice() == price);
     }
 
     /**
      * Verifies that an incorrect stock price is returned
      */
     @Test
-    public final void testGetStockPriceNegative() {
+    public final void testGetPriceNegative() {
         // compares method return value with unexpected result
-        assertFalse("Value returned from getStockPrice() equals the parameter value with decimal moved left by one point",
-                stockQuote.getStockPrice() == stockPrice.movePointLeft(1));
+        assertFalse("Value returned from getPrice() equals the parameter value with decimal moved left by one point",
+                stockQuote.getPrice() == price.movePointLeft(1));
     }
 
     /**
      * Verifies that the correct date recorded is returned
      */
     @Test
-    public final void testGetDateRecordedPositive() {
+    public final void testGetTimePositive() {
         // compares method return value with expected result
-        assertTrue("Value returned from getDateRecorded() equals parameter date",
-                stockQuote.getDateRecorded().equals(dateRecorded));
+        assertTrue("Value returned from getTime() equals parameter date",
+                stockQuote.getTime().equals(time));
     }
 
     /**
      * Verifies that an incorrect date recorded is returned
      */
     @Test
-    public final void testGetDateRecordedNegative() {
+    public final void testGetTimeNegative() {
         // compares method return value with unexpected result
-        DateTime dateNotRecorded = new DateTime(dateRecorded).plusDays(1);
-        assertFalse("Value returned from getDateRecorded() equals day after parameter date",
-                stockQuote.getDateRecorded().equals(dateNotRecorded));
+        DateTime dateNotRecorded = new DateTime(time).plusDays(1);
+        assertFalse("Value returned from getTime() equals day after parameter date",
+                stockQuote.getTime().equals(dateNotRecorded));
     }
 }

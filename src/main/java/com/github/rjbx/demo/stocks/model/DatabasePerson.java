@@ -2,7 +2,8 @@ package com.github.rjbx.demo.stocks.model;
 
 import javax.persistence.*;
 /**
- * This class models the {@code people} table.
+ * This class models a database table containing information about people
+ * as specified by the "name" property of the {@code @Table} annotation.
  * @author Bob Basmaji
  */
 @Entity

@@ -1,14 +1,18 @@
 package com.github.rjbx.demo.stocks.services;
 
+import com.github.rjbx.demo.stocks.utilities.StockServiceException;
 import org.apache.http.annotation.Immutable;
 
 /**
  * This class uses a factory pattern to instantiate service objects.
  * @author Bob Basmaji
  */
+@Immutable
 public final class ServiceFactory {
 
-    // hides the constructor because this class contains only static methods
+    /**
+     * Hides the constructor because this class contains only static methods
+     */
     private ServiceFactory() {
     }
 
@@ -16,14 +20,13 @@ public final class ServiceFactory {
      * Constructs a new {@code StockService} instance
      * @return an object implementing the {@code StockService} interface
      */
-    public static final StockService createStockService(String type) {
-        switch(type) {
-        case("basic"):
+    public static final StockService createStockService(ServiceType type) throws StockServiceException {
+        if (type.equals(ServiceType.BASIC)) {
             return new BasicStockService();
-        case("database"):
+        } else if (type.equals(ServiceType.DATABASE)) {
             return new DatabaseStockService();
-        default:
-            throw new RuntimeException();
+        } else {
+            throw new StockServiceException("Argument specifies an invalid ServiceType");
         }
     }
 

@@ -38,19 +38,19 @@ public final class XMLUtils {
         XMLStockQuoteList quotes = null;
         try {
             boolean eof = false;
-            String xmlInstance = "";
+            StringBuilder xmlInstance = new StringBuilder();
             BufferedReader reader = new BufferedReader(new FileReader(xmlPath));
             while (!eof) {
                 String line = reader.readLine();
                 if (line == null) {
                     eof = true;
                 } else {
-                    xmlInstance += line;
+                    xmlInstance.append(line);
                 }
             }
             JAXBContext jaxbContext = JAXBContext.newInstance(XMLStockQuoteList.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            quotes = (XMLStockQuoteList) unmarshaller.unmarshal(new StringReader(xmlInstance));
+            quotes = (XMLStockQuoteList) unmarshaller.unmarshal(new StringReader(xmlInstance.toString()));
         } catch (IOException | JAXBException e) {
             throw new XMLUnmarshalException(e.getMessage());
         }

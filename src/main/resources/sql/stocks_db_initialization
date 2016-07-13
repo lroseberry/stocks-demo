@@ -20,7 +20,7 @@ CREATE TABLE quotes(
    id INT NOT NULL AUTO_INCREMENT,
    symbol_id INT NOT NULL,
    time TIMESTAMP NOT NULL,
-   price DECIMAL NOT NULL,
+   price DECIMAL(10,2) NOT NULL,
    PRIMARY KEY (id),
    FOREIGN KEY (symbol_id) REFERENCES stock_symbols (id)
 );

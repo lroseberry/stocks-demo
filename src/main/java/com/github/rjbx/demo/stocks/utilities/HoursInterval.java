@@ -1,17 +1,15 @@
-package com.github.rjbx.demo.stocks.services;
+package com.github.rjbx.demo.stocks.utilities;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 
-import java.util.Calendar;
-
 /**
- * This enum implements the {@code IntervalEnum} interface.
+ * This enum implements the {@code Interval} interface.
  * Elements enumerate units, returned by public constant fields of the {@code Calendar} class, and the desired amount of each unit.
  * These values are passed to the add() method of the {@code Calendar} class in order to increment time by the specified interval.
  * @author Bob Basmaji
  */
 @Immutable
-public enum BasicIntervalEnum implements IntervalEnum {
+public enum HoursInterval implements Interval {
     /** An enumeration for one hour in a day */
     HOUR("HOUR")            { public final int amount() { return 1; } },
 
@@ -31,7 +29,7 @@ public enum BasicIntervalEnum implements IntervalEnum {
      * Constructs a new {@code BasicIntervalEnum} instance
      * @param symbol a {@code String} representation for an {@code enum} element
      */
-    BasicIntervalEnum(String symbol) { this.symbol = symbol; }
+    HoursInterval(String symbol) { this.symbol = symbol; }
 
     /**
      * @return the field of this instance representing an {@code enum} element

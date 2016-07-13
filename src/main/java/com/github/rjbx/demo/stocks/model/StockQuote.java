@@ -17,45 +17,45 @@ public final class StockQuote {
     // private fields of this class
     public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
     private static final DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(DATE_PATTERN);
-    private final String stockSymbol;
-    private final BigDecimal stockPrice;
-    private final DateTime dateRecorded;
+    private final String symbol;
+    private final BigDecimal price;
+    private final DateTime time;
 
     /**
      * Constructs a new {@code StockQuote} instance
-     * @param dateRecorded date the stock info was recorded
-     * @param stockPrice price of the stock on the provided date
-     * @param stockSymbol symbol for the company issuing the stock
+     * @param time date the stock info was recorded
+     * @param price price of the stock on the provided date
+     * @param symbol symbol for the company issuing the stock
      */
-    public StockQuote(DateTime dateRecorded, BigDecimal stockPrice, String stockSymbol) {
+    public StockQuote(DateTime time, BigDecimal price, String symbol) {
         // if any parameter values are null, throw exception; otherwise, initialize fields
-        if ((dateRecorded == null) || (stockPrice == null) || (stockSymbol == null)) {
+        if ((time == null) || (price == null) || (symbol == null)) {
             throw new RuntimeException();
         }
-        this.dateRecorded = new DateTime(dateRecorded);
-        this.stockPrice = stockPrice;
-        this.stockSymbol = stockSymbol;
+        this.time = new DateTime(time);
+        this.price = price;
+        this.symbol = symbol;
     }
 
     /**
      * @return the symbol that represents the company issuing this stock
      */
-    public final String getStockSymbol() {
-        return stockSymbol;
+    public final String getSymbol() {
+        return symbol;
     }
 
     /**
      * @return the price of one share of this stock
      */
-    public final BigDecimal getStockPrice() {
-        return stockPrice;
+    public final BigDecimal getPrice() {
+        return price;
     }
 
     /**
      * @return the date that the info for this stock was recorded
      */
-    public final DateTime getDateRecorded() {
-        return dateRecorded;
+    public final DateTime getTime() {
+        return time;
     }
 
     /**
@@ -68,6 +68,6 @@ public final class StockQuote {
      */
     @Override
     public String toString() {
-        return " [ " + getStockSymbol() + " " + dateRecorded.toString(dateFormatter) + " " + NumberFormat.getCurrencyInstance().format(getStockPrice()) + " ] ";
+        return " [ " + getSymbol() + " " + time.toString(dateFormatter) + " " + NumberFormat.getCurrencyInstance().format(getPrice()) + " ] ";
     }
 }

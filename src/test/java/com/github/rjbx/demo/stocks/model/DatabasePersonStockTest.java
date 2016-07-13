@@ -19,7 +19,7 @@ public final class DatabasePersonStockTest {
     private static final String lastName = "Basmaji";
     private static final int id = 10;
     private static DatabasePerson person;
-    private static DatabaseStockSymbol symbol;
+    private static DatabaseStockSymbol stockSymbol;
     private static DatabasePersonStock personStock;
 
     /**
@@ -31,11 +31,11 @@ public final class DatabasePersonStockTest {
         person.setFirstName(firstName);
         person.setLastName(lastName);
         person.setId(id);
-        symbol = new DatabaseStockSymbol("AAPL");
+        stockSymbol = new DatabaseStockSymbol("HAMM");
         personStock = new DatabasePersonStock();
         personStock.setId(id);
         personStock.setPerson(person);
-        personStock.setStockSymbol(symbol);
+        personStock.setStockSymbol(stockSymbol);
     }
 
     /**
@@ -51,27 +51,33 @@ public final class DatabasePersonStockTest {
      */
     @Test
     public final void testGetSetPersonNegative() {
-        DatabasePerson person2 = new DatabasePerson();
+        DatabasePerson person2 = new DatabasePerson("defensive", "copy");
+        personStock.getPerson().setFirstName(person2.getFirstName());
+        personStock.getPerson().setFirstName(person2.getLastName());
+        personStock.getPerson().setId(person2.getId());
         assertFalse("getPerson return value matches a value other than that which was passed into setter method",
                 person2.equals(personStock.getPerson()));
     }
 
     /**
-     * Verifies that getStockSymbol return value matches the value passed into the corresponding setter method
+     * Verifies that getSymbol return value matches the value passed into the corresponding setter method
      */
     @Test
     public final void testGetSetStockSymbolPositive() {
-        assertTrue("getStockSymbol return value does not match the value passed into the setter method",
-                symbol.equals(personStock.getStockSymbol()));
+        assertTrue("getSymbol return value does not match the value passed into the setter method",
+                stockSymbol.equals(personStock.getStockSymbol()));
     }
 
     /**
-     * Verifies that getStockSymbol return value does not match a value other than that which was passed into setter method
+     * Verifies that getSymbol return value does not match a value other than that which was passed into setter method
      */
     @Test
     public final void testGetSetStockSymbolNegative() {
-        assertFalse("getStockSymbol return value matches a value other than that which was passed into setter method",
-                "banana".equals(personStock.getStockSymbol()));
+        DatabaseStockSymbol stockSymbol2 = new DatabaseStockSymbol("CHEE");
+        personStock.getStockSymbol().setSymbol(stockSymbol2.getSymbol());
+        personStock.getStockSymbol().setId(stockSymbol2.getId());
+        assertFalse("getSymbol return value matches a value other than that which was passed into setter method",
+                stockSymbol2.equals(personStock.getStockSymbol()));
     }
 
     /**
@@ -97,7 +103,7 @@ public final class DatabasePersonStockTest {
      */
     @Test
     public final void testEqualsPositive() {
-        DatabasePersonStock personStock2 = new DatabasePersonStock(person, symbol);
+        DatabasePersonStock personStock2 = new DatabasePersonStock(person, stockSymbol);
         personStock2.setId(id);
         assertTrue("Same objects are not considered equal",
                 personStock.equals(personStock2));
@@ -108,7 +114,7 @@ public final class DatabasePersonStockTest {
      */
     @Test
     public final void testEqualsNegative() {
-        DatabasePersonStock personStock2 = new DatabasePersonStock(person, symbol);
+        DatabasePersonStock personStock2 = new DatabasePersonStock(person, stockSymbol);
         assertFalse("Different objects are considered equal",
                 personStock.equals(personStock2));
     }
@@ -122,7 +128,7 @@ public final class DatabasePersonStockTest {
                 personStock.toString().equals("PersonStock{" +
                 "id=" + personStock.getId() +
                 ", person='" + personStock.getPerson() + '\'' +
-                ", stockSymbol='" + symbol + '\'' +
+                ", stockSymbol='" + stockSymbol + '\'' +
                 '}'));
     }
 

@@ -7,7 +7,9 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
- * Models the quote table
+ * This class models a database table containing stock quote information
+ * as specified by the "name" property of the {@code @Table} annotation.
+ * @author Bob Basmaji
  */
 @Entity
 @Table(name="quotes", catalog="stocks")
@@ -15,20 +17,20 @@ public class DatabaseStockQuote implements DatabaseAccessObject {
     private int id;
     private Timestamp time;
     private BigDecimal price;
-    private DatabaseStockSymbol symbol;
+    private DatabaseStockSymbol stockSymbol;
 
     /**
-     * Constructs a {@code StockQuote} that needs to be initialized
+     * Constructs a {@code DatabaseStockQuote} that needs to be initialized
      */
     public DatabaseStockQuote() {
         // this empty constructor is required by hibernate framework
     }
 
     /**
-     * Constructs a valid {@code StockQuote}
+     * Constructs a valid {@code DatabaseStockQuote}
      * @param time the time to assign to this instance
      * @param price  the price to assign to this instance
-     * @param symbol the symbol to assign to this instance
+     * @param symbol the stockSymbol to assign to this instance
      */
     public DatabaseStockQuote(DateTime time, BigDecimal price, DatabaseStockSymbol symbol) {
         setTime(time);
@@ -37,7 +39,7 @@ public class DatabaseStockQuote implements DatabaseAccessObject {
     }
 
     /**
-     * @return the id field of this {@code StockQuote} instance
+     * @return the id field of this {@code DatabaseStockQuote} instance
      */
     @Id
     @Column(name = "id",  nullable = false, insertable = true, updatable = true)
@@ -55,7 +57,7 @@ public class DatabaseStockQuote implements DatabaseAccessObject {
     }
 
     /**
-     * @return the time field of this {@code StockQuote} instance
+     * @return the time field of this {@code DatabaseStockQuote} instance
      */
     @Basic
     @Column(name = "time", nullable = false, insertable = true, updatable = true)
@@ -72,7 +74,7 @@ public class DatabaseStockQuote implements DatabaseAccessObject {
     }
 
     /**
-     * @return the price field of this {@code StockQuote} instance
+     * @return the price field of this {@code DatabaseStockQuote} instance
      */
     @Basic
     @Column(name = "price", nullable = false, insertable = true, updatable = true, precision = 2)
@@ -81,7 +83,7 @@ public class DatabaseStockQuote implements DatabaseAccessObject {
     }
 
     /**
-     * Sets the price field of this {@code StockQuote} instance
+     * Sets the price field of this {@code DatabaseStockQuote} instance
      * @param price a BigDecimal object
      */
     public void setPrice(BigDecimal price) {
@@ -89,20 +91,24 @@ public class DatabaseStockQuote implements DatabaseAccessObject {
     }
 
     /**
-     * @return the stockSymbol field of this {@code StockQuote} instance
+     * Returns a defensive copy of the mutable {@code DatabaseStockSymbol} object
+     * assigned to the corresponding field of this class
+     * @return the stockSymbol field of this {@code DatabaseStockQuote} instance
      */
     @ManyToOne
     @JoinColumn(name = "symbol_id", referencedColumnName = "id",nullable = false)
     public DatabaseStockSymbol getStockSymbol() {
-        return symbol;
+        DatabaseStockSymbol stockSymbol = new DatabaseStockSymbol(this.stockSymbol.getSymbol());
+        stockSymbol.setId(this.stockSymbol.getId());
+        return stockSymbol;
     }
 
     /**
-     * Sets the stockSymbol field of this {@code StockQuote} instance
-     * @param symbol a DatabaseStockSymbol object
+     * Sets the stockSymbol field of this {@code DatabaseStockQuote} instance
+     * @param stockSymbol a DatabaseStockSymbol object
      */
-    public void setStockSymbol(DatabaseStockSymbol symbol) {
-        this.symbol = symbol;
+    public void setStockSymbol(DatabaseStockSymbol stockSymbol) {
+        this.stockSymbol = stockSymbol;
     }
 
     @Override
@@ -115,7 +121,7 @@ public class DatabaseStockQuote implements DatabaseAccessObject {
         if (id != stockQuote.id) return false;
         if (price != stockQuote.price) return false;
         if (time != null ? !time.equals(stockQuote.time) : stockQuote.time != null) return false;
-        if (!symbol.equals(stockQuote.symbol)) return false;
+        if (!stockSymbol.equals(stockQuote.stockSymbol)) return false;
 
         return true;
     }
@@ -125,7 +131,7 @@ public class DatabaseStockQuote implements DatabaseAccessObject {
         int result = id;
         result = 31 * result + (time != null ? time.hashCode() : 0);
         result = 31 * result + price.hashCode();
-        result = 31 * result + (symbol != null ? symbol.hashCode() : 0);
+        result = 31 * result + (stockSymbol != null ? stockSymbol.hashCode() : 0);
         return result;
     }
 
@@ -133,7 +139,7 @@ public class DatabaseStockQuote implements DatabaseAccessObject {
     public String toString() {
         return "StockQuote{" +
                 "id =" + id +
-                ", symbol=" + symbol +
+                ", stockSymbol=" + stockSymbol +
                 ", date='" + new DateTime(time).toString(StockQuote.getDateFormatter()) + '\'' +
                 ", price='" + price + '\'' +
                 '}';

@@ -1,11 +1,10 @@
 package com.github.rjbx.demo.stocks.services;
 
-import com.github.rjbx.demo.stocks.utilities.DatabaseConnectionException;
 import com.github.rjbx.demo.stocks.utilities.DatabaseInitializationException;
 import com.github.rjbx.demo.stocks.utilities.DatabaseUtils;
+import com.github.rjbx.demo.stocks.utilities.HoursInterval;
 import com.github.rjbx.demo.stocks.utilities.StockServiceException;
 import org.apache.http.annotation.Immutable;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -13,7 +12,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import org.joda.time.DateTime;
-import java.sql.SQLException;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -32,8 +31,8 @@ public final class StockServiceTest {
     private StockService stockService;
     private DateTime startRange;
     private DateTime endRange;
-    private String stockSymbol;
-    private BasicIntervalEnum intervalEnum;
+    private String symbol;
+    private HoursInterval interval;
     private static final int NUMBER_OF_DAYS = 100;
 
     /**
@@ -58,10 +57,10 @@ public final class StockServiceTest {
      */
     @Before
     public final void setUp() {
-        stockSymbol = "AAPL";
+        symbol = "AAPL";
         startRange = DateTime.now().minusDays(NUMBER_OF_DAYS);
         endRange = DateTime.now();
-        intervalEnum = BasicIntervalEnum.DAY;
+        interval = HoursInterval.DAY;
     }
 
     /**
@@ -69,9 +68,9 @@ public final class StockServiceTest {
      * @throws StockServiceException
      */
     @Test
-    public final void testGetQuoteSingleArgStockSymbolPositive() throws StockServiceException {
+    public final void testGetQuoteSingleArgSymbolPositive() throws StockServiceException {
         assertTrue("Stock symbol returned from return value of getQuote(String) does not equal parameter string",
-                stockService.getQuote(stockSymbol).getStockSymbol().equals(stockSymbol));
+                stockService.getQuote(symbol).getSymbol().equals(symbol));
     }
 
     /**
@@ -81,7 +80,7 @@ public final class StockServiceTest {
     @Test
     public final void testGetQuoteSingleArgSymbolNegative() throws StockServiceException {
         assertFalse("Stock symbol returned from return value of getQuote(String) equals lowercase-coverted parameter string",
-                stockService.getQuote(stockSymbol).getStockSymbol().equals(stockSymbol.toLowerCase()));
+                stockService.getQuote(symbol).getSymbol().equals(symbol.toLowerCase()));
     }
 
     /**
@@ -89,9 +88,9 @@ public final class StockServiceTest {
      * @throws StockServiceException
      */
     @Test
-    public final void testGetQuoteTripleArgStockSymbolPositive() throws StockServiceException {
+    public final void testGetQuoteTripleArgSymbolPositive() throws StockServiceException {
         assertTrue("Stock symbol returned from return value of getQuote(String, DateTime, DateTime) does not equal parameter string",
-                stockService.getQuote(stockSymbol, startRange, endRange).get(0).getStockSymbol().equals(stockSymbol));
+                stockService.getQuote(symbol, startRange, endRange).get(0).getSymbol().equals(symbol));
     }
 
     /**
@@ -99,9 +98,9 @@ public final class StockServiceTest {
      * @throws StockServiceException
      */
     @Test
-    public final void testGetQuoteTripleArgStockSymbolNegative() throws StockServiceException {
+    public final void testGetQuoteTripleArgSymbolNegative() throws StockServiceException {
         assertFalse("Stock symbol returned from return value of getQuote(String, DateTime, DateTime) equals lowercase-coverted parameter string",
-                stockService.getQuote(stockSymbol, startRange, endRange).get(0).getStockSymbol().equals(stockSymbol.toLowerCase()));
+                stockService.getQuote(symbol, startRange, endRange).get(0).getSymbol().equals(symbol.toLowerCase()));
     }
 
     /**
@@ -109,9 +108,9 @@ public final class StockServiceTest {
      * @throws StockServiceException
      */
     @Test
-    public final void testGetQuoteQuadArgStockSymbolPositive() throws StockServiceException {
+    public final void testGetQuoteQuadArgSymbolPositive() throws StockServiceException {
         assertTrue("Stock symbol returned from return value of getQuote(String, DateTime, DateTime) does not equal parameter string",
-                stockService.getQuote(stockSymbol, startRange, endRange, intervalEnum).get(0).getStockSymbol().equals(stockSymbol));
+                stockService.getQuote(symbol, startRange, endRange, interval).get(0).getSymbol().equals(symbol));
     }
 
     /**
@@ -119,20 +118,21 @@ public final class StockServiceTest {
      * @throws StockServiceException
      */
     @Test
-    public final void testGetQuoteQuadArgStockSymbolNegative() throws StockServiceException {
+    public final void testGetQuoteQuadArgSymbolNegative() throws StockServiceException {
         assertFalse("Stock symbol returned from return value of getQuote(String, DateTime, DateTime) equals lowercase-coverted parameter string",
-                stockService.getQuote(stockSymbol, startRange, endRange, intervalEnum).get(0).getStockSymbol().equals(stockSymbol.toLowerCase()));
+                stockService.getQuote(symbol, startRange, endRange, interval).get(0).getSymbol().equals(symbol.toLowerCase()));
     }
 
     /**
      * Defines parameters to be used in each test
      * @return collection of parameters
+     * @throws StockServiceException
      */
     @Parameterized.Parameters
-    public static final Collection<Object[]> instancesToTest() {
+    public static final Collection<Object[]> instancesToTest() throws StockServiceException {
         return Arrays.asList(
-            new Object[]{ServiceFactory.createStockService("basic")},
-            new Object[]{ServiceFactory.createStockService("database")}
+            new Object[]{ServiceFactory.createStockService(ServiceType.BASIC)},
+            new Object[]{ServiceFactory.createStockService(ServiceType.DATABASE)}
         );
     }
 }
