@@ -8,3 +8,6 @@ Added XMLUtils class to unmarshal XML data into XML domain objects. Added Databa
 
 7/13:
 ServiceFactory.createStockService() now accepts enum arguments only.  DatabaseStockQuote and DatabasePersonStock, which contain fields that reference mutable objects, now defensively copy these objects before returning via getter methods.  Updated unit tests for said getter methods. Replaced costly looped immutable String concat with mutable StringBuilder in XMLUtils.unmarshal()
+
+7/26:
+Added WebStockService for fetching stock data from Yahoo finance web API.  Implemented a web GUI by adding servlet and javabean classes for searching stock quotes from one of three data sources (automated; database; web) executing off of a Tomcat web server.
